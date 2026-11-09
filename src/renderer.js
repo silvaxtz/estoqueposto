@@ -6,6 +6,10 @@ function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show'
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function dateText(){return new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long',year:'numeric'})}
 $('#today').textContent=dateText();
+function applyTheme(theme){document.documentElement.dataset.theme=theme;localStorage.setItem('atualize-theme',theme);const b=$('#themeToggle');if(b)b.textContent=theme==='dark'?'☀ Tema claro':'☾ Tema escuro'}
+applyTheme(localStorage.getItem('atualize-theme')||'light');
+$('#themeToggle').onclick=()=>applyTheme(document.documentElement.dataset.theme==='dark'?'light':'dark');
+
 async function init(){categories=await window.estoque.categories();buildNav();document.querySelectorAll('.nav-fixed').forEach(b=>b.onclick=()=>go(b.dataset.page));go('inicio')}
 function buildNav(){
  const nav=$('#categoryNav');
