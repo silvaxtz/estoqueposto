@@ -37,3 +37,6 @@
 
 :root[data-theme="dark"] .quick-link{background:#253247;border-color:#46546a;color:#f1f5f9}
 :root[data-theme="dark"] .quick-link:hover{background:#334155;border-color:#7186a5;color:#fff}
+
+.stock-eye{margin-left:7px;border:0;background:transparent;color:inherit;cursor:pointer;font-size:15px;padding:2px 5px;border-radius:5px;vertical-align:middle}
+.stock-eye:hover{background:#64748b22}
