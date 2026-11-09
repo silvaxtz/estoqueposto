@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Estoque Grupo Atualize</title><link rel="stylesheet" href="styles.css"></head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><img src="../assets/logo-atualize.jpg" alt="Grupo Atualize"><span>CONTROLE DE ESTOQUE</span></div>
+    <nav>
+      <button class="nav active" data-page="inicio">▦ <span>Visão geral</span></button>
+      <button class="nav" data-page="sorvetes">❄ <span>Sorvetes</span></button>
+      <button class="nav" data-page="lubrificantes">◉ <span>Lubrificantes</span></button>
+      <button class="nav" data-page="outros">▣ <span>Outros produtos</span></button>
+      <button class="nav" data-page="movimentacoes">⇄ <span>Movimentações</span></button>
+      <button class="nav" data-page="vendedores">♙ <span>Vendedores</span></button>
+      <button class="nav" data-page="relatorios">▤ <span>Relatórios e backup</span></button>
+    </nav>
+    <div class="side-foot"><i></i> Banco de dados local<br><small>Seus dados ficam neste computador</small></div>
+  </aside>
+  <main class="main">
+    <header><div><small>GRUPO ATUALIZE / ESTOQUE</small><h1 id="pageTitle">Visão geral</h1></div><div class="header-right"><span class="offline"><i></i> Operação local</span><span id="today"></span></div></header>
+    <section id="content"></section>
+  </main>
+</div>
+<div id="modal" class="modal hidden"><div class="modal-card"><div class="modal-head"><h2 id="modalTitle">Adicionar produto</h2><button class="x" id="closeModal">×</button></div><div id="modalBody"></div></div></div>
+<div id="toast" class="toast"></div>
+<script src="renderer.js"></script>
+</body></html>

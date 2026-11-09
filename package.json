@@ -1,0 +1,47 @@
+{
+  "name": "estoque-grupo-atualize",
+  "version": "1.0.0",
+  "description": "Sistema local de estoque do Grupo Atualize",
+  "main": "src/main.cjs",
+  "author": "Grupo Atualize",
+  "license": "UNLICENSED",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win nsis"
+  },
+  "devDependencies": {
+    "electron": "^33.2.1",
+    "electron-builder": "^25.1.8"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.7.0"
+  },
+  "build": {
+    "appId": "br.com.grupoatualize.estoque",
+    "productName": "Estoque Grupo Atualize",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "src/**/*",
+      "assets/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "assets/logo-atualize.jpg",
+        "to": "logo-atualize.jpg"
+      }
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "assets/app-icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
+  }
+}
