@@ -134,7 +134,7 @@ ipcMain.handle('products:save', (_, p) => {
     return p.id;
   }
   const result = db.prepare(`INSERT INTO products(code,name,category,unit,units_per_box,stock,min_stock,purchase_price,sale_price)
-    VALUES (?,?,?,?,?,0,?,?,?)`).run(p.code||null,p.name.trim(),p.category,p.unit||'un',p.units_per_box||null,Number(p.min_stock)||0,Number(p.purchase_price)||0,Number(p.sale_price)||0);
+    VALUES (?,?,?,?,?,?,?,?,?)`).run(p.code||null,p.name.trim(),p.category,p.unit||'un',p.units_per_box||null,Number(p.units_per_box)||0,Number(p.min_stock)||0,Number(p.purchase_price)||0,Number(p.sale_price)||0);
   return result.lastInsertRowid;
 });
 ipcMain.handle('products:deactivate', (_, id) => db.prepare('UPDATE products SET active=0 WHERE id=?').run(id).changes);
