@@ -10,6 +10,7 @@ function initDb() {
   db.pragma('journal_mode = WAL');
   db.pragma('foreign_keys = ON');
   db.exec(`
+    CREATE TABLE IF NOT EXISTS categories (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL UNIQUE COLLATE NOCASE);
     CREATE TABLE IF NOT EXISTS products (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       code TEXT UNIQUE,
@@ -40,6 +41,9 @@ function initDb() {
       created_at TEXT NOT NULL DEFAULT (datetime('now','localtime'))
     );
   `);
+  const addCategory = db.prepare('INSERT OR IGNORE INTO categories(name) VALUES (?)');
+  ['Sorvetes','Lubrificantes','Outros'].forEach(name => addCategory.run(name));
+  db.prepare('INSERT OR IGNORE INTO categories(name) SELECT DISTINCT category FROM products').run();
   const sellerCount = db.prepare('SELECT COUNT(*) n FROM sellers').get().n;
   if (!sellerCount) {
     const addSeller = db.prepare('INSERT INTO sellers(name) VALUES (?)');
@@ -88,6 +92,15 @@ ipcMain.handle('dashboard:get', () => {
   const today = db.prepare("SELECT COALESCE(SUM(quantity),0) n FROM movements WHERE type='saida' AND date(created_at)=date('now','localtime')").get().n;
   const sales = db.prepare("SELECT COALESCE(SUM(quantity*unit_price),0) n FROM movements WHERE type='saida' AND date(created_at)=date('now','localtime')").get().n;
   return { products, units, low, today, sales };
+});
+ipcMain.handle('categories:list', () => db.prepare('SELECT name FROM categories ORDER BY id').all());
+ipcMain.handle('categories:add', (_, name) => {
+  const clean = String(name || '').trim();
+  if (!clean) throw new Error('Informe o nome da categoria.');
+  if (clean.length > 40) throw new Error('Use até 40 caracteres.');
+  try { db.prepare('INSERT INTO categories(name) VALUES (?)').run(clean); }
+  catch (e) { if (String(e.message).includes('UNIQUE')) throw new Error('Essa categoria já existe.'); throw e; }
+  return true;
 });
 ipcMain.handle('products:list', (_, category='Todos') => {
   if (category === 'Todos') return db.prepare('SELECT * FROM products WHERE active=1 ORDER BY category,name').all();
