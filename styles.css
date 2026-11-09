@@ -41,3 +41,6 @@
 :root[data-theme="dark"] .note{background:#3a3020;border-color:#69552b;color:#f5d58a}
 .theme-toggle{border:1px solid var(--line);border-radius:8px;padding:9px 12px;background:transparent;color:var(--ink);font-size:12px;font-weight:650;cursor:pointer}
 .header-tools{display:flex;align-items:center;gap:10px}
+
+:root[data-theme="dark"] .quickcat{background:#253247;border-color:#46546a;color:#f1f5f9}
+:root[data-theme="dark"] .quickcat:hover{background:#334155;border-color:#7186a5;color:#fff}
