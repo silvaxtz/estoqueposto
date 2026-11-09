@@ -91,7 +91,11 @@ ipcMain.handle('dashboard:get', () => {
   const low = db.prepare('SELECT COUNT(*) n FROM products WHERE active=1 AND stock<=min_stock').get().n;
   const today = db.prepare("SELECT COALESCE(SUM(quantity),0) n FROM movements WHERE type='saida' AND date(created_at)=date('now','localtime')").get().n;
   const sales = db.prepare("SELECT COALESCE(SUM(quantity*unit_price),0) n FROM movements WHERE type='saida' AND date(created_at)=date('now','localtime')").get().n;
-  return { products, units, low, today, sales };
+  const stockValue = db.prepare('SELECT COALESCE(SUM(stock*purchase_price),0) n FROM products WHERE active=1').get().n;
+  const totalOut = db.prepare("SELECT COALESCE(SUM(quantity),0) n FROM movements WHERE type IN ('saida','perda')").get().n;
+  const totalSales = db.prepare("SELECT COALESCE(SUM(quantity*unit_price),0) n FROM movements WHERE type='saida'").get().n;
+  const totalLoss = db.prepare("SELECT COALESCE(SUM(quantity),0) n FROM movements WHERE type='perda'").get().n;
+  return { products, units, low, today, sales, stockValue, totalOut, totalSales, totalLoss };
 });
 ipcMain.handle('categories:list', () => db.prepare('SELECT name FROM categories ORDER BY id').all());
 ipcMain.handle('categories:add', (_, name) => {
