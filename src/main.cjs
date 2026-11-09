@@ -99,7 +99,7 @@ ipcMain.handle('dashboard:get', () => {
   const daily = db.prepare(`SELECT date(created_at) day, COALESCE(SUM(quantity),0) qty
     FROM movements WHERE type='saida' AND date(created_at)>=date('now','localtime','-6 days')
     GROUP BY date(created_at) ORDER BY day`).all();
-  const categoryOut = db.prepare(`SELECT p.category, COALESCE(SUM(m.quantity),0) qty
+  const categoryOut = db.prepare(`SELECT c.name category, COALESCE(SUM(m.quantity),0) qty
     FROM categories c LEFT JOIN products p ON p.category=c.name
     LEFT JOIN movements m ON m.product_id=p.id AND m.type='saida'
     GROUP BY c.name ORDER BY c.id`).all();
