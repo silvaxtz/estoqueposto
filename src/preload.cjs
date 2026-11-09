@@ -10,6 +10,7 @@ contextBridge.exposeInMainWorld('estoque', {
   addSeller: (name) => ipcRenderer.invoke('sellers:add', name),
   movements: (limit) => ipcRenderer.invoke('movements:list', limit),
   addMovement: (m) => ipcRenderer.invoke('movements:add', m),
+  deleteSale: (id) => ipcRenderer.invoke('movements:deleteSale', id),
   exportCsv: () => ipcRenderer.invoke('reports:csv'),
   backup: () => ipcRenderer.invoke('backup:save')
 });
