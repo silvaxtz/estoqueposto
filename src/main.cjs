@@ -41,6 +41,12 @@ function initDb() {
       created_at TEXT NOT NULL DEFAULT (datetime('now','localtime'))
     );
   `);
+  // Migração para bancos já existentes: adiciona a coluna sem apagar os dados atuais.
+  const productColumns = db.prepare('PRAGMA table_info(products)').all().map(column => column.name);
+  if (!productColumns.includes('units_per_box')) {
+    db.exec('ALTER TABLE products ADD COLUMN units_per_box INTEGER');
+  }
+
   const addCategory = db.prepare('INSERT OR IGNORE INTO categories(name) VALUES (?)');
   ['Sorvetes','Lubrificantes','Outros'].forEach(name => addCategory.run(name));
   db.prepare('INSERT OR IGNORE INTO categories(name) SELECT DISTINCT category FROM products').run();
