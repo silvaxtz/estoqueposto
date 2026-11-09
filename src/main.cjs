@@ -95,7 +95,16 @@ ipcMain.handle('dashboard:get', () => {
   const totalOut = db.prepare("SELECT COALESCE(SUM(quantity),0) n FROM movements WHERE type IN ('saida','perda')").get().n;
   const totalSales = db.prepare("SELECT COALESCE(SUM(quantity*unit_price),0) n FROM movements WHERE type='saida'").get().n;
   const totalLoss = db.prepare("SELECT COALESCE(SUM(quantity),0) n FROM movements WHERE type='perda'").get().n;
-  return { products, units, low, today, sales, stockValue, totalOut, totalSales, totalLoss };
+  const daily = db.prepare(`SELECT date(created_at) day, COALESCE(SUM(quantity),0) qty
+    FROM movements WHERE type='saida' AND date(created_at)>=date('now','localtime','-6 days')
+    GROUP BY date(created_at) ORDER BY day`).all();
+  const categoryOut = db.prepare(`SELECT p.category, COALESCE(SUM(m.quantity),0) qty
+    FROM categories c LEFT JOIN products p ON p.category=c.name
+    LEFT JOIN movements m ON m.product_id=p.id AND m.type='saida'
+    GROUP BY c.name ORDER BY c.id`).all();
+  const attention = db.prepare('SELECT id,name,category,stock,min_stock FROM products WHERE active=1 AND (stock<=0 OR (min_stock>0 AND stock<=min_stock)) ORDER BY stock,name').all();
+  const allProducts = db.prepare('SELECT * FROM products WHERE active=1 ORDER BY category,name').all();
+  return { products, units, low, today, sales, stockValue, totalOut, totalSales, totalLoss, daily, categoryOut, attention, allProducts };
 });
 ipcMain.handle('categories:list', () => db.prepare('SELECT name FROM categories ORDER BY id').all());
 ipcMain.handle('categories:add', (_, name) => {
