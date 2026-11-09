@@ -156,6 +156,15 @@ ipcMain.handle('movements:add', (_, m) => {
   });
   tx(); return true;
 });
+ipcMain.handle('movements:deleteSale', (_, id) => {
+  const sale = db.prepare("SELECT id,product_id,quantity FROM movements WHERE id=? AND type='saida'").get(id);
+  if (!sale) throw new Error('Venda não encontrada ou não pode ser excluída.');
+  const tx = db.transaction(() => {
+    db.prepare('UPDATE products SET stock=stock+? WHERE id=?').run(sale.quantity,sale.product_id);
+    db.prepare("DELETE FROM movements WHERE id=? AND type='saida'").run(id);
+  });
+  tx(); return true;
+});
 ipcMain.handle('reports:csv', async () => {
   const rows = db.prepare(`SELECT m.id,m.created_at,m.type,p.code,p.name product,m.quantity,
     COALESCE(s.name,'—') seller,m.unit_price,(m.quantity*m.unit_price) total,m.note
